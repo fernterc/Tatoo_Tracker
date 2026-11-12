@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#141210">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Estúdio">
+<title>Estúdio — registro do tatuador</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ========== TELA INICIAL ========== -->
+<main id="home" class="view active">
+  <header class="topbar">
+    <button id="monthBtn" class="month-btn" aria-label="Abrir calendário do mês">
+      <span class="month-name" id="mName">Novembro</span>
+      <span class="month-year" id="mYear">2026</span>
+      <svg class="chev" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="top-actions">
+      <button id="backupBtn" class="icon-btn" aria-label="Fazer backup">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
+      </button>
+      <button id="settingsBtn" class="icon-btn" aria-label="Ajustes">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.9.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.9.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.9-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.9V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="backupBanner" class="banner" hidden>
+    <span id="backupMsg"></span>
+    <button id="bannerBackup" class="link-btn">Fazer backup</button>
+    <button id="bannerSnooze" class="icon-btn small" aria-label="Lembrar amanhã">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+
+  <div id="swipeHome" class="swipe-area">
+    <section class="metrics" aria-label="Índices do mês">
+      <div class="hero-metric">
+        <div class="label">Valor total recebido</div>
+        <div class="hero-value" id="m_received">R$ 0</div>
+      </div>
+      <div class="row two">
+        <div class="metric"><div class="label">Clientes atendidos</div><div class="value" id="m_clients">0</div></div>
+        <div class="metric"><div class="label">Sessões realizadas</div><div class="value" id="m_sessions">0</div></div>
+      </div>
+      <div class="row two">
+        <div class="metric"><div class="label">Valor por cliente</div><div class="value" id="m_perClient">—</div></div>
+        <div class="metric"><div class="label">Valor por sessão</div><div class="value" id="m_perSession">—</div></div>
+      </div>
+      <div class="row two pending">
+        <div class="metric"><div class="label">Saldo pendente previsto</div><div class="value red" id="m_pend">R$ 0</div></div>
+        <div class="metric"><div class="label">Clientes pendentes</div><div class="value red" id="m_pendClients">0</div></div>
+      </div>
+    </section>
+
+    <section class="chart-wrap" aria-label="Faturamento dos últimos 12 meses">
+      <div id="chart"></div>
+      <div class="chart-caption" id="chartCaption"></div>
+      <div class="chart-legend">Barras: valor recebido. Linha: clientes atendidos.</div>
+    </section>
+  </div>
+
+  <button id="fab" class="fab" aria-label="Novo cliente">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.4 2.6a2.1 2.1 0 013 3L12 15l-4 1 1-4 9.4-9.4z"/></svg>
+  </button>
+</main>
+
+<!-- ========== CALENDÁRIO DO MÊS ========== -->
+<main id="cal" class="view">
+  <header class="topbar">
+    <button id="calBack" class="icon-btn" aria-label="Fechar calendário">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="cal-title">
+      <button id="calPrev" class="icon-btn" aria-label="Mês anterior"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <span id="calTitle">Novembro 2026</span>
+      <button id="calNext" class="icon-btn" aria-label="Próximo mês"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+    <span class="spacer"></span>
+  </header>
+  <div id="swipeCal" class="swipe-area">
+    <div class="dow" aria-hidden="true"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div>
+    <div id="calGrid" class="grid"></div>
+    <div class="cal-legend"><span><i class="dot s"></i>Sessão cadastrada</span><span><i class="dot e"></i>Evento na agenda</span></div>
+    <section id="dayPanel"></section>
+    <section id="monthList"></section>
+  </div>
+</main>
+
+<!-- ========== NOVO / EDITAR CLIENTE ========== -->
+<main id="form" class="view">
+  <header class="topbar">
+    <button id="formBack" class="icon-btn" aria-label="Voltar">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+    <h1 id="formTitle" class="page-title">Novo cliente</h1>
+    <span class="spacer"></span>
+  </header>
+
+  <form id="projForm" autocomplete="off" novalidate>
+    <div class="field">
+      <label for="f_cliente">Cliente</label>
+      <input id="f_cliente" type="text" enterkeyhint="next" autocapitalize="words">
+    </div>
+    <div class="field">
+      <label for="f_desenho">Desenho</label>
+      <input id="f_desenho" type="text" enterkeyhint="next" autocapitalize="sentences">
+    </div>
+    <div class="field">
+      <label for="f_valor">Valor</label>
+      <input id="f_valor" type="text" inputmode="decimal" placeholder="R$ 0,00">
+    </div>
+    <div class="field">
+      <label id="l_sinalData">Data do sinal</label>
+      <button type="button" id="b_sinalData" class="field-btn" aria-labelledby="l_sinalData b_sinalData"></button>
+    </div>
+    <div class="field">
+      <label for="f_sinalValor">Valor do sinal</label>
+      <input id="f_sinalValor" type="text" inputmode="decimal" placeholder="R$ 0,00">
+    </div>
+    <div class="field">
+      <label id="l_pagData">Data do pagamento</label>
+      <button type="button" id="b_pagData" class="field-btn" aria-labelledby="l_pagData b_pagData"></button>
+    </div>
+    <div class="field">
+      <label id="l_datas">Datas de execução</label>
+      <button type="button" id="b_datas" class="field-btn" aria-labelledby="l_datas b_datas"></button>
+    </div>
+    <div class="pair">
+      <div class="field">
+        <div class="label-static">Número de sessões</div>
+        <div class="readout" id="o_sessoes">—</div>
+      </div>
+      <div class="field">
+        <div class="label-static">Valor por sessão</div>
+        <div class="readout" id="o_porSessao">—</div>
+      </div>
+    </div>
+    <p id="f_error" class="error" role="alert" hidden></p>
+    <div class="form-actions">
+      <button type="submit" class="btn primary">Salvar</button>
+      <button type="button" id="f_delete" class="btn danger" hidden>Excluir cadastro</button>
+    </div>
+  </form>
+</main>
+
+<!-- ========== AJUSTES ========== -->
+<main id="settings" class="view">
+  <header class="topbar">
+    <button id="setBack" class="icon-btn" aria-label="Voltar">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+    <h1 class="page-title">Ajustes</h1>
+    <span class="spacer"></span>
+  </header>
+
+  <section class="card">
+    <h2>Backup</h2>
+    <p id="lastBackupText" class="soft"></p>
+    <button id="s_backup" class="btn primary">Fazer backup</button>
+    <label class="btn ghost" for="s_restore">Restaurar de um backup</label>
+    <input id="s_restore" type="file" accept=".json,application/json" hidden>
+    <p class="hint">O backup abre o menu de compartilhamento do iPhone. Escolha Arquivos, Google Drive ou Email. O app lembra você toda semana.</p>
+  </section>
+
+  <section class="card">
+    <h2>Google Agenda</h2>
+    <div class="field">
+      <label for="s_proxy">Endereço do proxy</label>
+      <input id="s_proxy" type="url" inputmode="url" autocapitalize="off" autocorrect="off" placeholder="https://agenda.seunome.workers.dev/?t=senha">
+    </div>
+    <div class="field">
+      <label for="s_filtro">Mostrar só eventos que contenham</label>
+      <input id="s_filtro" type="text" autocapitalize="off" placeholder="Em branco mostra todos. Separe por vírgula.">
+    </div>
+    <button id="s_agenda" class="btn primary">Salvar e atualizar agenda</button>
+    <p id="agendaStatus" class="soft"></p>
+    <p class="hint">Os eventos aparecem no calendário do mês. Toque em um evento para transformá-lo em cadastro.</p>
+  </section>
+
+  <section class="card">
+    <h2>Seus dados</h2>
+    <p class="soft">Tudo fica salvo neste aparelho. Faça backup com frequência: se o iPhone ficar muitos dias sem abrir o app, o sistema pode apagar os dados locais.</p>
+  </section>
+</main>
+
+<!-- ========== SELETOR DE DATAS ========== -->
+<div id="pk" class="overlay" hidden>
+  <div class="backdrop" id="pkBackdrop"></div>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="pkTitle">
+    <div class="sheet-head">
+      <h2 id="pkTitle">Data</h2>
+      <button id="pkClose" class="icon-btn" aria-label="Fechar">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="cal-title pk-nav">
+      <button id="pkPrev" class="icon-btn" aria-label="Mês anterior"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <span id="pkMonth"></span>
+      <button id="pkNext" class="icon-btn" aria-label="Próximo mês"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+    <div id="pkSwipe">
+      <div class="dow" aria-hidden="true"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div>
+      <div id="pkGrid" class="grid"></div>
+    </div>
+    <p id="pkHint" class="hint pk-hint" hidden></p>
+    <div class="sheet-actions">
+      <button id="pkClear" class="btn ghost">Limpar</button>
+      <button id="pkDone" class="btn primary" hidden>Concluir</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
